@@ -14,7 +14,15 @@ dependencies {
 }
 
 def getPackageName() {
-    def config = file("res/xml/config.xml").getText()
+    def config;
+    if (file("src/main/res/xml/config.xml").exists()) {
+        // cordova-android >= 7.0.0
+        config = file("src/main/res/xml/config.xml").getText()
+    } else {
+        // cordova-android < 7.0.0
+        config = file("res/xml/config.xml").getText()
+    }
+
     def xml = new XmlParser(false, false).parseText(config)
     return xml.attribute("id")
 }
