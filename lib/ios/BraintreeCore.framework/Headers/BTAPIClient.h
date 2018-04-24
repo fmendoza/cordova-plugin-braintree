@@ -7,16 +7,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- Domain for API client errors.
- */
 extern NSString *const BTAPIClientErrorDomain;
 
-/**
- Error codes associated with API client.
- */
 typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
-    /// Unknown error
     BTAPIClientErrorTypeUnknown = 0,
 
     /// Configuration fetch failed
@@ -26,33 +19,33 @@ typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
     BTAPIClientErrorTypeNotAuthorized,
 };
 
-/**
- This class acts as the entry point for accessing the Braintree APIs via common HTTP methods performed on API endpoints.
- 
- @note It also manages authentication via tokenization key and provides access to a merchant's gateway configuration.
+/*!
+ @class BTAPIClient
+ @brief This class acts as the entry point for accessing the Braintree APIs via common HTTP methods performed on API endpoints.
+ @discussion It also manages authentication via tokenization key and provides access to a merchant's gateway configuration.
 */
 @interface BTAPIClient : NSObject
 
-/**
- Initialize a new API client.
+/*!
+ @brief Initialize a new API client.
 
  @param authorization Your tokenization key or client token. Passing an invalid value may return `nil`.
  @return A Braintree API client, or `nil` if initialization failed.
 */
 - (nullable instancetype)initWithAuthorization:(NSString *)authorization;
 
-/**
- Create a copy of an existing API client, but specify a new source and integration type.
- This provides a way to override an API client's source and integration metadata, which
+/*!
+ @brief Create a copy of an existing API client, but specify a new source and integration type.
+ @discussion This provides a way to override an API client's source and integration metadata, which
  is captured and sent to Braintree as part of the analytics we track.
 */
 - (instancetype)copyWithSource:(BTClientMetadataSourceType)source
                    integration:(BTClientMetadataIntegrationType)integration;
 
-/**
- Provides configuration data as a `BTJSON` object.
+/*!
+ @brief Provides configuration data as a `BTJSON` object.
 
- The configuration data can be used by supported payment options to configure themselves
+ @discussion The configuration data can be used by supported payment options to configure themselves
  dynamically through the Control Panel. It also contains configuration options for the
  Braintree SDK Core components.
 
@@ -62,10 +55,10 @@ typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
 */
 - (void)fetchOrReturnRemoteConfiguration:(void (^)(BTConfiguration * _Nullable configuration, NSError * _Nullable error))completionBlock;
 
-/**
- Fetches a customer's vaulted payment method nonces.
+/*!
+ @brief Fetches a customer's vaulted payment method nonces.
 
- Must be using client token with a customer ID specified.
+ @discussion Must be using client token with a customer ID specified.
 
  @param completion Callback that returns an array of payment method nonces.
  On success, `paymentMethodNonces` contains the nonces and `error` is `nil`. The default payment method nonce, if one exists, will be first.
@@ -73,10 +66,10 @@ typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
 */
 - (void)fetchPaymentMethodNonces:(void(^)(NSArray <BTPaymentMethodNonce *> * _Nullable paymentMethodNonces, NSError * _Nullable error))completion;
 
-/**
- Fetches a customer's vaulted payment method nonces.
+/*!
+ @brief Fetches a customer's vaulted payment method nonces.
 
- Must be using client token with a customer ID specified.
+ @discussion Must be using client token with a customer ID specified.
 
  @param defaultFirst Specifies whether to sorts the fetched payment method nonces with the default payment method or the most recently used payment method first
  @param completion Callback that returns an array of payment method nonces
@@ -84,8 +77,8 @@ typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
 - (void)fetchPaymentMethodNonces:(BOOL)defaultFirst
                       completion:(void(^)(NSArray <BTPaymentMethodNonce *> * _Nullable paymentMethodNonces, NSError * _Nullable error))completion;
 
-/**
- Perfom an HTTP GET on a URL composed of the configured from environment and the given path.
+/*!
+ @brief Perfom an HTTP GET on a URL composed of the configured from environment and the given path.
 
  @param path The endpoint URI path.
  @param parameters Optional set of query parameters to be encoded with the request.
@@ -98,8 +91,8 @@ typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
  parameters:(nullable NSDictionary <NSString *, NSString *> *)parameters
  completion:(nullable void(^)(BTJSON * _Nullable body, NSHTTPURLResponse * _Nullable response, NSError * _Nullable error))completionBlock;
 
-/**
- Perfom an HTTP POST on a URL composed of the configured from environment and the given path.
+/*!
+ @brief Perfom an HTTP POST on a URL composed of the configured from environment and the given path.
 
  @param path The endpoint URI path.
  @param parameters Optional set of parameters to be JSON encoded and sent in the body of the request.
@@ -112,9 +105,6 @@ typedef NS_ENUM(NSInteger, BTAPIClientErrorType) {
   parameters:(nullable NSDictionary *)parameters
   completion:(nullable void(^)(BTJSON * _Nullable body, NSHTTPURLResponse * _Nullable response, NSError * _Nullable error))completionBlock;
 
-/**
- Base initializer - do not use.
- */
 - (instancetype)init __attribute__((unavailable("Use initWithAuthorization: instead.")));
 
 @end

@@ -8,13 +8,10 @@
 #import <Foundation/Foundation.h>
 #import "PPOTRequest.h"
 
-/**
- Used to build request objects that initialize PayPay payment flows
- */
 @interface PPOTRequestFactory : NSObject
 
-/**
- Factory method. Non-empty values for all parameters MUST be provided.
+/*!
+ @brief Factory method. Non-empty values for all parameters MUST be provided.
 
  @param approvalURL Client has already created a payment on PayPal server; this is the resulting HATEOS ApprovalURL
  @param clientID The app's Client ID, as obtained from developer.paypal.com
@@ -27,8 +24,8 @@
                                                      environment:(nonnull NSString *)environment
                                                callbackURLScheme:(nonnull NSString *)callbackURLScheme;
 
-/**
- Factory method. Only `pairingId` can be nil.
+/*!
+ @brief Factory method. Only `pairingId` can be nil.
 
  @param approvalURL Client has already created a payment on PayPal server; this is the resulting HATEOS ApprovalURL
  @param pairingId The pairing ID for the risk component. Optional.
@@ -43,8 +40,8 @@
                                                      environment:(nonnull NSString *)environment
                                                callbackURLScheme:(nonnull NSString *)callbackURLScheme;
 
-/**
- Factory method. Non-empty values for all parameters MUST be provided.
+/*!
+ @brief Factory method. Non-empty values for all parameters MUST be provided.
 
  @param scopeValues Set of requested scope-values.
         Available scope-values are listed at https://developer.paypal.com/webapps/developer/docs/integration/direct/identity/attributes/
@@ -62,8 +59,8 @@
                                                                environment:(nonnull NSString *)environment
                                                          callbackURLScheme:(nonnull NSString *)callbackURLScheme;
 
-/**
- Factory method. Non-empty values for all parameters MUST be provided.
+/*!
+ @brief Factory method. Non-empty values for all parameters MUST be provided.
 
  @param approvalURL Client has already created a payment on PayPal server; this is the resulting HATEOS ApprovalURL
  @param clientID The app's Client ID, as obtained from developer.paypal.com
@@ -76,8 +73,8 @@
                                                                      environment:(nonnull NSString *)environment
                                                                callbackURLScheme:(nonnull NSString *)callbackURLScheme;
 
-/**
- Factory method. Only pairingId can be nil.
+/*!
+ @brief Factory method. Only pairingId can be nil.
 
  @param approvalURL Client has already created a payment on PayPal server; this is the resulting HATEOS ApprovalURL
  @param pairingId The pairing ID for the risk component. Optional.

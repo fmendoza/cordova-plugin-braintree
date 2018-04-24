@@ -8,15 +8,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- BTCardClient category for UnionPay
- */
 @interface BTCardClient (UnionPay)
 
-/**
- Fetches the capabilities of a card number.
+/*!
+ @brief Fetches the capabilities of a card number.
 
- This should be used to look up a card PAN to see whether it is UnionPay, and if so, what is required to tokenize it.
+ @discussion This should be used to look up a card PAN to see whether it is UnionPay, and if so, what is required to tokenize it.
 
  @param cardNumber The card number.
  @param completion A completion block that is invoked when the card capabilities have been fetched.
@@ -24,10 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)fetchCapabilities:(NSString *)cardNumber
                completion:(void (^)(BTCardCapabilities * _Nullable cardCapabilities, NSError * _Nullable error))completion;
 
-/**
- Enrolls a UnionPay card and returns an enrollment ID. The `enrollmentID` property of `BTCardRequest` must be set to this IDbefore the card can be tokenized.
+/*!
+ @brief Enrolls a UnionPay card and returns an enrollment ID. The `enrollmentID` property of `BTCardRequest` must be set to this IDbefore the card can be tokenized.
 
- Attempting to enroll cards that do not require enrollment -- including non-UnionPay cards -- will cause an error. This
+ @discussion Attempting to enroll cards that do not require enrollment -- including non-UnionPay cards -- will cause an error. This
  can be prevented by checking the card's capabilities first.
 
  @param request A card tokenization request that contains a card, mobile phone number, and country code. Cannot be `nil`.

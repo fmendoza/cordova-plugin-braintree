@@ -7,9 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-/**
- JSON helper for PayPal payments
- */
 @interface PPOTJSONHelper : NSObject
 
 + (nullable NSString *)stringFromDictionary:(nonnull NSDictionary *)dictionary withKey:(nonnull NSString *)key;

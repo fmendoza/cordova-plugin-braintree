@@ -11,8 +11,8 @@
 - (void)info:(NSString *)format, ...;
 - (void)debug:(NSString *)format, ...;
 
-/**
- Custom block for handling log messages
+/*!
+ @brief Custom block for handling log messages
 */
 @property (nonatomic, copy) void (^logBlock)(BTLogLevel level, NSString *message);
 

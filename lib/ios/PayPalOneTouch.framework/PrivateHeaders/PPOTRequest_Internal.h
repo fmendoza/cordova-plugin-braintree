@@ -15,31 +15,31 @@
 
 // mandatory fields
 
-/**
- All requests MUST include the app's Client ID, as obtained from developer.paypal.com
+/*!
+ @brief All requests MUST include the app's Client ID, as obtained from developer.paypal.com
 */
 @property (nonatomic, readwrite) NSString *clientID;
 
-/**
- All requests MUST indicate the environment - PayPalEnvironmentProduction, PayPalEnvironmentMock, or PayPalEnvironmentSandbox;
+/*!
+ @discussion All requests MUST indicate the environment - PayPalEnvironmentProduction, PayPalEnvironmentMock, or PayPalEnvironmentSandbox;
  or else a stage indicated as `base-url:port`
 */
 @property (nonatomic, readwrite) NSString *environment;
 
-/**
- All requests MUST indicate the URL scheme to be used for returning to this app, following an app-switch
+/*!
+ @brief All requests MUST indicate the URL scheme to be used for returning to this app, following an app-switch
 */
 @property (nonatomic, readwrite) NSString *callbackURLScheme;
 
-/**
- If client calls getTargetApp:, then cache the result here for later use by performWithCompletionBlock:.
+/*!
+ @brief If client calls getTargetApp:, then cache the result here for later use by performWithCompletionBlock:.
 */
 @property (nonatomic, readwrite) PPOTConfigurationRecipe *configurationRecipe;
 
-/**
- Recipe behavior override, for debugging purposes only.
+/*!
+ @brief Recipe behavior override, for debugging purposes only.
  
- PPOTRequestTargetBrowser - always switch to browser; i.e., ignore all Wallet recipes
+ @discussion PPOTRequestTargetBrowser - always switch to browser; i.e., ignore all Wallet recipes
  PPOTRequestTargetOnDeviceApplication - always switch to Wallet; i.e., ignore all Browser recipes
  PPOTRequestTargetNone or PayPalOneTouchRequestTargetUnknown - obey recipes
 */
@@ -49,8 +49,8 @@
                      environment:(NSString *)environment
                callbackURLScheme:(NSString *)callbackURLScheme;
 
-/**
- subclasses must override
+/*!
+ @brief subclasses must override
 */
 - (PPOTSwitchRequest *)getAppSwitchRequestForConfigurationRecipe:(PPOTConfigurationRecipe *)configurationRecipe;
 

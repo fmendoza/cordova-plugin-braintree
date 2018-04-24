@@ -4,62 +4,34 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/**
- Domain for tokenization service errors.
- */
 extern NSString * const BTTokenizationServiceErrorDomain;
-
-/**
- Key for app switch delegate.
- */
 extern NSString * const BTTokenizationServiceAppSwitchDelegateOption;
-
-/**
- Key for view presenting delegate.
- */
 extern NSString * const BTTokenizationServiceViewPresentingDelegateOption;
-
-/**
- Key for PayPal scopes.
- */
 extern NSString * const BTTokenizationServicePayPalScopesOption;
-
-/**
- Key for amount.
- */
 extern NSString * const BTTokenizationServiceAmountOption;
-
-/**
- Key for nonce.
- */
 extern NSString * const BTTokenizationServiceNonceOption;
 
-/**
- Error codes associated with `BTTokenizationService`.
- */
 typedef NS_ENUM(NSInteger, BTTokenizationServiceError) {
-    /// Unknown error
     BTTokenizationServiceErrorUnknown = 0,
-
-    /// Type not registered
     BTTokenizationServiceErrorTypeNotRegistered,
 };
 
-/**
- A tokenization service that supports registration of tokenizers at runtime.
+/*!
+ @class BTTokenizationService
+ @brief A tokenization service that supports registration of tokenizers at runtime.
 
- `BTTokenizationService` provides access to tokenization services from payment options
+ @discussion `BTTokenizationService` provides access to tokenization services from payment options
  (e.g. `BTPayPalDriver`) without introducing compile-time dependencies on the frameworks.
 */
 @interface BTTokenizationService : NSObject
 
-/**
- The singleton instance of the tokenization service
+/*!
+ @brief The singleton instance of the tokenization service
 */
 + (instancetype)sharedService;
 
-/**
- Registers a block to execute for a given type when `tokenizeType:withAPIClient:completion:` or`tokenizeType:options:withAPIClient:completion:` are invoked.
+/*!
+ @brief Registers a block to execute for a given type when `tokenizeType:withAPIClient:completion:` or`tokenizeType:options:withAPIClient:completion:` are invoked.
 
  @param type A type string to identify the tokenization block. Providing a type that has already
         been registered will overwrite the previously registered tokenization block.
@@ -67,13 +39,13 @@ typedef NS_ENUM(NSInteger, BTTokenizationServiceError) {
 */
 - (void)registerType:(NSString *)type withTokenizationBlock:(void(^)(BTAPIClient *apiClient, NSDictionary * _Nullable options, void(^)(BTPaymentMethodNonce * _Nullable paymentMethodNonce, NSError * _Nullable error)))tokenizationBlock;
 
-/**
- Indicates whether a type has been registered with a valid tokenization block.
+/*!
+ @brief Indicates whether a type has been registered with a valid tokenization block.
 */
 - (BOOL)isTypeAvailable:(NSString *)type;
 
-/**
- Perform tokenization for the given type. This will execute the tokenization block that has been registered for the type.
+/*!
+ @brief Perform tokenization for the given type. This will execute the tokenization block that has been registered for the type.
 
  @param type The tokenization type to perform
  @param apiClient The API client to use when performing tokenization.
@@ -83,8 +55,8 @@ typedef NS_ENUM(NSInteger, BTTokenizationServiceError) {
        withAPIClient:(BTAPIClient *)apiClient
           completion:(void(^)(BTPaymentMethodNonce * _Nullable paymentMethodNonce, NSError * _Nullable error))completion;
 
-/**
- Perform tokenization for the given type. This will execute the tokenization block that has been registered for the type.
+/*!
+ @brief Perform tokenization for the given type. This will execute the tokenization block that has been registered for the type.
 
  @param type The tokenization type to perform
  @param options A dictionary of data to use when invoking the tokenization block. This can be
@@ -97,9 +69,6 @@ typedef NS_ENUM(NSInteger, BTTokenizationServiceError) {
        withAPIClient:(BTAPIClient *)apiClient
           completion:(void(^)(BTPaymentMethodNonce * _Nullable paymentMethodNonce, NSError * _Nullable error))completion;
 
-/**
- An array of all tokenization types
- */
 @property (nonatomic, readonly, strong) NSArray <NSString *> *allTypes;
 
 @end

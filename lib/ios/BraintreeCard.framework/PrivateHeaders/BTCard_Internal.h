@@ -5,8 +5,4 @@
 
 - (NSDictionary *)parameters;
 
-- (NSDictionary *)graphQLParameters;
-
-extern NSString * const BTCardGraphQLTokenizationMutation;
-
 @end

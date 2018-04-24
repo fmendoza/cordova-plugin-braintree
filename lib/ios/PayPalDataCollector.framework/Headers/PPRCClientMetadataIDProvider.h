@@ -7,23 +7,23 @@
 
 #import <Foundation/Foundation.h>
 
-/**
- Block that processes a given HTTP response
+/*!
+ @brief Block that processes a given HTTP response
 */
 typedef void (^PPRCClientMetadataIDProviderNetworkResponseBlock)(NSHTTPURLResponse * _Nonnull response, NSData * _Nonnull data);
 
-/**
- Networking adapter block which is passed a URL request, the block must send the request, and then passes on the response to the given network response block
+/*!
+ @brief Networking adapter block which is passed a URL request, the block must send the request, and then passes on the response to the given network response block
 */
 typedef void (^PPRCClientMetadataIDProviderNetworkAdapterBlock)(NSURLRequest * _Nonnull request, _Nonnull PPRCClientMetadataIDProviderNetworkResponseBlock);
 
-/**
- Interface exposed from the Risk Component to bootstrap the Risk Component
+/*!
+ @brief Interface exposed from the Risk Component to bootstrap the Risk Component
 */
 @interface PPRCClientMetadataIDProvider : NSObject
 
-/**
- Initializes the risk component
+/*!
+ @brief Initializes the risk component
 
  @param appGuid the application's GUID
  @param sourceAppVersion version of the source app/library
@@ -33,8 +33,8 @@ typedef void (^PPRCClientMetadataIDProviderNetworkAdapterBlock)(NSURLRequest * _
                        sourceAppVersion:(nonnull NSString *)sourceAppVersion
                     networkAdapterBlock:(nonnull PPRCClientMetadataIDProviderNetworkAdapterBlock)networkAdapterBlock;
 
-/**
- Initializes the risk component
+/*!
+ @brief Initializes the risk component
 
  @param appGuid the application's GUID
  @param sourceAppVersion version of the source app/library
@@ -46,8 +46,8 @@ typedef void (^PPRCClientMetadataIDProviderNetworkAdapterBlock)(NSURLRequest * _
                     networkAdapterBlock:(nonnull PPRCClientMetadataIDProviderNetworkAdapterBlock)networkAdapterBlock
                               pairingID:(nullable NSString *)pairingID;
 
-/**
- Generates a client metadata ID
+/*!
+ @brief Generates a client metadata ID
 
  @param pairingID a pairing ID to associate with this clientMetadataID must be 10-32 chars long or null
  @return a client metadata ID

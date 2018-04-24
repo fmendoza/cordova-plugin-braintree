@@ -7,13 +7,10 @@
 
 #import <Foundation/Foundation.h>
 
-/**
- Used to collect risk data via the PayPal data collector
- */
 @interface PPDataCollector : NSObject
 
-/**
- Returns a client metadata ID.
+/*!
+ @brief Returns a client metadata ID.
 
  @note This returns a raw client metadata ID, which is not the correct format for device data
  when creating a transaction. Instead, it is recommended to use `collectPayPalDeviceData`.
@@ -23,8 +20,8 @@
 */
 + (nonnull NSString *)clientMetadataID:(nullable NSString *)pairingID;
 
-/**
- Returns a client metadata ID.
+/*!
+ @brief Returns a client metadata ID.
 
  @note This returns a raw client metadata ID, which is not the correct format for device data
  when creating a transaction. Instead, it is recommended to use `collectPayPalDeviceData`.
@@ -33,10 +30,10 @@
 */
 + (nonnull NSString *)clientMetadataID DEPRECATED_MSG_ATTRIBUTE("Use [PPDataCollector collectPayPalDeviceData] to generate a device data string.");
 
-/**
- Collects device data for PayPal.
+/*!
+ @brief Collects device data for PayPal.
 
- This should be used when the user is paying with PayPal or Venmo only.
+ @discussion This should be used when the user is paying with PayPal or Venmo only.
 
  @return a deviceData string that should be passed into server-side calls, such as `Transaction.sale`,
          for PayPal transactions. This JSON serialized string contains a PayPal fraud ID.
