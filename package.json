@@ -23,6 +23,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "xcode": "1.0.0"
+    "xcode": "0.9.0"
   }
 }
