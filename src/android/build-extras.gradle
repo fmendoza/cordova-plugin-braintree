@@ -1,9 +1,11 @@
 
 def packageName = getPackageName()
+def cleanPackagename = getCleanPackagename()
 
 android {
     defaultConfig {
         applicationId packageName
+        manifestPlaceholders = [cleanPackagename:cleanPackagename]
     }
 }
 
@@ -25,4 +27,9 @@ def getPackageName() {
 
     def xml = new XmlParser(false, false).parseText(config)
     return xml.attribute("id")
+}
+
+def getCleanPackagename() {
+    def packageName = getPackageName();
+    return packageName.replace('_', '').toLowerCase();
 }
