@@ -12,8 +12,6 @@ module.exports = function(context) {
         }
     }
 
-    if(parseInt(context.opts.cordova.version) >= 7) return; // cordova@7 embeds the frameworks so this script is not required
-
     function fromDir(startPath,filter, rec, multiple){
         if (!fs.existsSync(startPath)){
             console.log("no dir ", startPath);
@@ -78,6 +76,16 @@ module.exports = function(context) {
         return;
     }
     const myProj = xcode.project(projectPath);
+    myProj.parseSync();
+    addRunpathSearchBuildProperty(myProj, "Debug");
+    addRunpathSearchBuildProperty(myProj, "Release");
+
+    // unquote (remove trailing ")
+    var projectName = myProj.getFirstTarget().firstTarget.name;
+    if (projectName.charAt(0)=="\"") {
+      projectName = projectName.substr(1);
+      projectName = projectName.substr(0, projectName.length-1); //Removing the char " at beginning and the end.
+    }
 
     function addRunpathSearchBuildProperty(proj, build) {
         const LD_RUNPATH_SEARCH_PATHS =  proj.getBuildProperty("LD_RUNPATH_SEARCH_PATHS", build);
@@ -90,61 +98,53 @@ module.exports = function(context) {
         }
     }
 
-    myProj.parseSync();
-    addRunpathSearchBuildProperty(myProj, "Debug");
-    addRunpathSearchBuildProperty(myProj, "Release");
+    function embedFrameworks() {
+      const groupName = 'Embed Frameworks ' + context.opts.plugin.id;
+      const pluginPathInPlatformIosDir = projectName + '/Plugins/' + context.opts.plugin.id;
 
-    // unquote (remove trailing ")
-    var projectName = myProj.getFirstTarget().firstTarget.name;
-    if (projectName.charAt(0)=="\"") {
-      projectName = projectName.substr(1);
-      projectName = projectName.substr(0, projectName.length-1); //Removing the char " at beginning and the end.
+      process.chdir('./platforms/ios');
+      const frameworkFilesToEmbed = fromDir(pluginPathInPlatformIosDir ,'.framework', false, true);
+      process.chdir('../../');
+
+      if(!frameworkFilesToEmbed.length) return;
+      if (!myProj.hash.project.objects['PBXCopyFilesBuildPhase']) {
+          myProj.addBuildPhase(frameworkFilesToEmbed, 'PBXCopyFilesBuildPhase', groupName, myProj.getFirstTarget().uuid, 'frameworks');
+        }
+
+        for(var frmFileFullPath of frameworkFilesToEmbed) {
+            var justFrameworkFile = path.basename(frmFileFullPath);
+            var fileRef = getFileRefFromName(myProj, justFrameworkFile);
+            var fileId = getFileIdAndRemoveFromFrameworks(myProj, justFrameworkFile);
+
+            // Adding PBXBuildFile for embedded frameworks
+            var file = {
+                uuid: fileId,
+                basename: justFrameworkFile,
+                settings: {
+                    ATTRIBUTES: ["CodeSignOnCopy", "RemoveHeadersOnCopy"]
+                },
+
+                fileRef:fileRef,
+                group:groupName
+            };
+            myProj.addToPbxBuildFileSection(file);
+
+
+            // Adding to Frameworks as well (separate PBXBuildFile)
+            var newFrameworkFileEntry = {
+                uuid: myProj.generateUuid(),
+                basename: justFrameworkFile,
+
+                fileRef:fileRef,
+                group: "Frameworks"
+            };
+            myProj.addToPbxBuildFileSection(newFrameworkFileEntry);
+            myProj.addToPbxFrameworksBuildPhase(newFrameworkFileEntry);
+        }
+        console.log('Embedded Frameworks in ' + context.opts.plugin.id);
     }
 
-    const groupName = 'Embed Frameworks ' + context.opts.plugin.id;
-    const pluginPathInPlatformIosDir = projectName + '/Plugins/' + context.opts.plugin.id;
-
-    process.chdir('./platforms/ios');
-    const frameworkFilesToEmbed = fromDir(pluginPathInPlatformIosDir ,'.framework', false, true);
-    process.chdir('../../');
-
-    if(!frameworkFilesToEmbed.length) return;
-
-	if (!myProj.hash.project.objects['PBXCopyFilesBuildPhase']) {
-    	myProj.addBuildPhase(frameworkFilesToEmbed, 'PBXCopyFilesBuildPhase', groupName, myProj.getFirstTarget().uuid, 'frameworks');
-    }
-
-    for(var frmFileFullPath of frameworkFilesToEmbed) {
-        var justFrameworkFile = path.basename(frmFileFullPath);
-        var fileRef = getFileRefFromName(myProj, justFrameworkFile);
-        var fileId = getFileIdAndRemoveFromFrameworks(myProj, justFrameworkFile);
-
-        // Adding PBXBuildFile for embedded frameworks
-        var file = {
-            uuid: fileId,
-            basename: justFrameworkFile,
-            settings: {
-                ATTRIBUTES: ["CodeSignOnCopy", "RemoveHeadersOnCopy"]
-            },
-
-            fileRef:fileRef,
-            group:groupName
-        };
-        myProj.addToPbxBuildFileSection(file);
-
-
-        // Adding to Frameworks as well (separate PBXBuildFile)
-        var newFrameworkFileEntry = {
-            uuid: myProj.generateUuid(),
-            basename: justFrameworkFile,
-
-            fileRef:fileRef,
-            group: "Frameworks"
-        };
-        myProj.addToPbxBuildFileSection(newFrameworkFileEntry);
-        myProj.addToPbxFrameworksBuildPhase(newFrameworkFileEntry);
-    }
-    console.log('Embedded Frameworks in ' + context.opts.plugin.id);
+    if(parseInt(context.opts.cordova.version) < 7) embedFrameworks(); // cordova@7 embeds the frameworks so this script is not required
 
 	var buildPhase = myProj.addBuildPhase([], 'PBXShellScriptBuildPhase', 'Run Script', myProj.getFirstTarget().uuid, { inputPaths : '', outputPaths : '', shellPath : '', shellScript : '' } ).buildPhase;
     buildPhase['shellPath'] = '/bin/sh';
@@ -155,7 +155,6 @@ module.exports = function(context) {
     console.log('Added Arch stripping run script build phase');
 
     fs.writeFileSync(projectPath, myProj.writeSync());
-
 	/* add ${PRODUCT_BUNDLE_IDENTIFIER}.payments to URL Schemes */
 	process.chdir('./platforms/ios/' + projectName);
 	var infoPlist = plist.parse(fs.readFileSync(projectName + '-Info.plist', 'utf8'));
