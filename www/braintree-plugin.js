@@ -14,9 +14,9 @@ var BraintreePlugin = {};
 
 /**
  * Used to initialize the Braintree client.
- * 
+ *
  * The client must be initialized before other methods can be used.
- * 
+ *
  * @param {string} token - The client token or tokenization key to use with the Braintree client.
  * @param [function] successCallback - The success callback for this asynchronous function.
  * @param [function] failureCallback - The failure callback for this asynchronous function; receives an error string.
@@ -33,7 +33,7 @@ BraintreePlugin.initialize = function initialize(token, successCallback, failure
 
 /**
  * Used to configure Apple Pay on iOS.
- * 
+ *
  * @param {object} options - The options used to configure Apple Pay.
  * @param [function] successCallback - The success callback for this asynchronous function.
  * @param [function] failureCallback - The failure callback for this asynchronous function; receives an error string.
@@ -64,7 +64,7 @@ BraintreePlugin.setupApplePay = function setupApplePay(options, successCallback,
 
 /**
  * Shows Braintree's drop-in payment UI.
- * 
+ *
  * @param {object} options - The options used to control the drop-in payment UI.
  * @param [function] successCallback - The success callback for this asynchronous function; receives a result object.
  * @param [function] failureCallback - The failure callback for this asynchronous function; receives an error string.
@@ -84,7 +84,9 @@ BraintreePlugin.presentDropInPaymentUI = function showDropInUI(options, successC
 
     var pluginOptions = [
         options.amount,
-        options.primaryDescription
+        options.email,
+        options.phone,
+        options.address
 	];
 
 	exec(successCallback, failureCallback, PLUGIN_ID, "presentDropInPaymentUI", pluginOptions);
