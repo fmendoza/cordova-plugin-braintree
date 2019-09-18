@@ -2,6 +2,7 @@ package net.justincredible;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
@@ -14,6 +15,8 @@ import com.braintreepayments.api.dropin.DropInResult;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
+import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.models.ThreeDSecureInfo;
 import com.braintreepayments.api.models.VenmoAccountNonce;
 
@@ -113,14 +116,35 @@ public final class BraintreePlugin extends CordovaPlugin {
         // Obtain the arguments.
 
         String amount = args.getString(0);
-        
+
         if (amount == null) {
             callbackContext.error("amount is required.");
         }
-        
-        String primaryDescription = args.getString(1);
 
-        dropInRequest.amount(amount);
+        String email = args.getString(1);
+        String phone = args.getString(2);
+        JSONObject address = args.optJSONObject(3);
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
+          .amount(amount)
+          .email(email)
+          .mobilePhoneNumber(phone)
+          .versionRequested(ThreeDSecureRequest.VERSION_2);
+
+        if (address != null) {
+          ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
+            .givenName(address.optString("name"))
+            .surname(address.optString("lastName"))
+            .streetAddress(address.optString("route"))
+            .locality(address.optString("locality"))
+            .postalCode(address.optString("cp"));
+
+            threeDSecureRequest.billingAddress(billingAddress);
+        }
+
+        dropInRequest
+          .requestThreeDSecureVerification(true)
+          .threeDSecureRequest(threeDSecureRequest);
 
         this.cordova.setActivityResultCallback(this);
         this.cordova.startActivityForResult(this, dropInRequest.getIntent(this.cordova.getActivity()), DROP_IN_REQUEST);
