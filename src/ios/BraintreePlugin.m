@@ -58,6 +58,17 @@ NSString *countryCode;
 
 #pragma mark - Cordova commands
 
+- (void)handleOpenURLNotification:(NSNotification*)notification
+{
+    NSURL* url = [notification object];
+    NSString *bundle_id = [NSBundle mainBundle].bundleIdentifier;
+    bundle_id = [bundle_id stringByAppendingString:@".payments"];
+    if ([url.scheme localizedCaseInsensitiveCompare:bundle_id] == NSOrderedSame) {
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        [BTAppSwitch handleOpenURL:url options:options];
+    }
+}
+
 - (void)initialize:(CDVInvokedUrlCommand *)command {
 
     // Ensure we have the correct number of arguments.
@@ -91,6 +102,7 @@ NSString *countryCode;
 
     CDVPluginResult *res = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:res callbackId:command.callbackId];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleOpenURLNotification:) name:CDVPluginHandleOpenURLNotification object:nil];
 }
 
 - (void)setupApplePay:(CDVInvokedUrlCommand *)command {
