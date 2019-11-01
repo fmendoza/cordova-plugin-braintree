@@ -124,6 +124,7 @@ public final class BraintreePlugin extends CordovaPlugin {
         String email = args.getString(1);
         String phone = args.getString(2);
         JSONObject address = args.optJSONObject(3);
+        boolean disableCard = args.getBoolean(4);
 
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
           .amount(amount)
@@ -145,6 +146,10 @@ public final class BraintreePlugin extends CordovaPlugin {
         dropInRequest
           .requestThreeDSecureVerification(true)
           .threeDSecureRequest(threeDSecureRequest);
+
+        if (disableCard == true) {
+            dropInRequest.disableCard();
+        }
 
         this.cordova.setActivityResultCallback(this);
         this.cordova.startActivityForResult(this, dropInRequest.getIntent(this.cordova.getActivity()), DROP_IN_REQUEST);

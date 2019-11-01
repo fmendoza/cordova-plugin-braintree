@@ -86,7 +86,8 @@ BraintreePlugin.presentDropInPaymentUI = function showDropInUI(options, successC
         options.amount,
         options.email,
         options.phone,
-        options.address
+        options.address,
+        options.disableCard
 	];
 
 	exec(successCallback, failureCallback, PLUGIN_ID, "presentDropInPaymentUI", pluginOptions);
