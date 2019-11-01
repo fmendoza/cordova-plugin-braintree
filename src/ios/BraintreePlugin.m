@@ -166,7 +166,7 @@ NSString *countryCode;
     NSString* email = [command.arguments objectAtIndex:1];
     NSString* phone = [command.arguments objectAtIndex:2];
     NSDictionary* address = [command.arguments objectAtIndex:3];
-    NSNumber disableCard = [command.arguments objectAtIndex:4];
+    NSNumber* disableCard = [command.arguments objectAtIndex:4];
 
     // Save off the Cordova callback ID so it can be used in the completion handlers.
     dropInUIcallbackId = command.callbackId;
